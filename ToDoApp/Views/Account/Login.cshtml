@@ -1,0 +1,156 @@
+﻿@model ToDoApp.Models.User
+@{
+    Layout = null;
+    ViewBag.Title = "Login";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Member Login</title>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+    body {
+        font-family: 'Arial', sans-serif;
+        background: #f0f0f0; /* Arka plan rengi güncellendi */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+    .container {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        background: white;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        width: 800px; /* Konteyner genişliği */
+    }
+    .left-section {
+        text-align: center;
+        width: 50%; /* Sol bölüm genişliği */
+    }
+    .right-section {
+        width: 50%; /* Sağ bölüm genişliği */
+    }
+    h2 {
+        color: #333;
+        font-size: 24px;
+        margin-bottom: 24px;
+    }
+    input[type='email'],
+    input[type='password'],
+    input[type='text'] {
+        width: calc(100% - 20px);
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        display: block;
+    }
+    input[type='submit'] {
+        width: calc(100% - 20px);
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        color: white;
+        background-color: #007bff; /* Buton rengi */
+        cursor: pointer;
+        font-size: 16px;
+        display: block;
+    }
+    input[type='submit']:hover {
+        background-color: #0056b3;
+    }
+    .social-login {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 32px;
+    }
+    .social-login img {
+        width: 32px;
+        height: 32px;
+    margin: 0 12px;
+        cursor: pointer;
+    }
+    .sign-in-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.sign-in-btn:hover {
+    background-color: #0056b3;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.sign-in-btn:active {
+    transform: translateY(2px);
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="left-section" id="welcome-section">
+        <h2>Tekrardan Hoşgeldin !</h2>
+        <p>Bizimle bağlantıda kalmak için lütfen kişisel bilgilerinizle giriş yap</p>
+        <button class="sign-in-btn">SIGN IN</button>
+    </div>
+    <div class="right-section" id="login-section" style="display: none;">
+        <h2>Giriş Yap</h2>
+        <form asp-action="Login" asp-controller="Account" method="post">
+            <input asp-for="Email" type="email" placeholder="Email" required>
+            <input asp-for="Password" type="password" placeholder="Şifre" required>
+            <input type="submit" value="LOGIN">
+        </form>
+    </div>
+    <div class="right-section" id="register-section">
+        <h2>Hesap Oluştur</h2>
+        <div class="social-login">
+            <img src="~/images/google.png" />
+            <img src="~/images/facebook.png" />
+            <img src="~/images/twitter.png" />
+        </div>
+        <form asp-action="Register" asp-controller="Account" method="post">
+            <input asp-for="Username" type="text" placeholder="İsim" required>
+            <input asp-for="Email" type="email" placeholder="Email" required>
+            <input asp-for="Password" type="password" placeholder="Şifre" required>
+            <input type="submit" value="SIGN UP">
+        </form>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var signInButton = document.querySelector('.sign-in-btn');
+        var welcomeSection = document.getElementById('welcome-section');
+        var loginSection = document.getElementById('login-section');
+        var registerSection = document.getElementById('register-section');
+
+        signInButton.addEventListener('click', function() {
+            welcomeSection.style.display = 'none'; 
+            registerSection.style.display = 'none'; 
+            loginSection.style.display = 'block'; 
+        });
+    });
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,270 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.19.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+  <title>Awesome Todo List</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #e2d5de;
+      margin: 0;
+      padding: 0;
+    }
+
+    .date-section table {
+      background-color: #ffffff;
+      /* Beyaz */
+    }
+
+    .date-section th,
+    .date-section td {
+      background-color: #ffffff;
+      /* Beyaz */
+      border: none;
+    }
+
+    section {
+      height: 100vh;
+    }
+
+
+    .card {
+      border-radius: 15px;
+    }
+
+    .form-outline {
+      width: 100%;
+    }
+
+    .list-group-item {
+      border: none;
+      /* Remove borders */
+      border-radius: 0.25rem;
+      margin-bottom: 8px;
+    }
+
+    .list-group-item:last-child {
+      margin-bottom: 0;
+    }
+
+    #deleteBtn {
+      margin-top: 10px;
+    }
+
+    .date-icon {
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <section class="vh-100" style="background-color: #e2d5de;">
+    <div class="container py-5 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col col-xl-10">
+          <div class="card" style="border-radius: 15px;">
+            <div class="card-body p-5">
+              <h6 class="mb-3">Awesome Todo List</h6>
+              <form class="form-container">
+                <div class="form-outline flex-fill">
+                  <input type="text" id="form3" class="form-control form-control-lg" />
+                  <label class="form-label" for="form3">What do you need to do today?</label>
+                </div>
+                <div class="input-group mb-3">
+                  <input type="text" class="form-control" id="startDate" placeholder="Start Date" />
+                  <div class="input-group-append">
+                    <span class="input-group-text date-icon" id="start-date-icon"><i class="bi bi-calendar"></i></span>
+                  </div>
+                </div>
+                <div class="input-group mb-3">
+                  <input type="text" class="form-control" id="endDate" placeholder="End Date" />
+                  <div class="input-group-append">
+                    <span class="input-group-text date-icon" id="end-date-icon"><i class="bi bi-calendar"></i></span>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg ms-2">Add</button>
+              </form>
+              <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+              <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+              <script
+                src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+              <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                  const form = document.querySelector("form");
+                  const input = document.getElementById("form3");
+                  const startDateInput = document.getElementById("startDate");
+                  const endDateInput = document.getElementById("endDate");
+                  const todoList = document.querySelector(".list-group");
+                  const deleteButton = document.getElementById("deleteBtn");
+
+                  // Initialize datepicker for start date
+                  $("#startDate").datepicker({
+                    format: "mm/dd/yyyy",
+                    autoclose: true
+                  });
+
+                  // Initialize datepicker for end date
+                  $("#endDate").datepicker({
+                    format: "mm/dd/yyyy",
+                    autoclose: true
+                  });
+
+                  // Add click event for start date icon
+                  document.getElementById("start-date-icon").addEventListener("click", function () {
+                    $("#startDate").datepicker("show");
+                  });
+
+                  // Add click event for end date icon
+                  document.getElementById("end-date-icon").addEventListener("click", function () {
+                    $("#endDate").datepicker("show");
+                  });
+
+                  form.addEventListener("submit", function (e) {
+                    e.preventDefault();
+
+                    if (input.value.trim() !== "") {
+                      const newItem = document.createElement("li");
+                      newItem.className = "list-group-item d-flex justify-content-between align-items-center border-start-0 border-top-0 border-end-0 border-bottom rounded-0 mb-2";
+                      newItem.innerHTML = `
+  <div class="d-flex align-items-center">
+    <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." />
+    <span class="item-text">${input.value}</span>
+  </div>
+  <div class="date-section">
+    <table class="table table-striped">
+      <tbody>
+        <tr>
+          <th scope="row">Start Date:</th>
+          <td class="start-date-text">${startDateInput.value}</td>
+          <th scope="row" class="ml-2">End Date:</th>
+          <td class="ml-1 end-date-text">${endDateInput.value}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="action-buttons">
+    <a href="#!" class="edit-item" data-mdb-toggle="tooltip" title="Edit item">
+      <i class="fas fa-edit text-warning"></i>
+    </a>
+  </div>
+`;
+
+                      todoList.appendChild(newItem);
+                      input.value = ""; // Clear the input field
+                      startDateInput.value = ""; // Clear start date
+                      endDateInput.value = ""; // Clear end date
+
+                      setupEditEvent(newItem); // Setup the edit event for the new item
+                    }
+
+                  });
+
+                  function setupEditEvent(item) {
+                    const editButton = item.querySelector(".edit-item");
+                    const itemText = item.querySelector(".item-text");
+                    const startDateText = item.querySelector(".start-date-text");
+                    const endDateText = item.querySelector(".end-date-text");
+
+                    editButton.addEventListener("click", function () {
+                      const newName = prompt("Edit item name:", itemText.innerText);
+                      const newStartDate = prompt("Edit start date:", startDateText.innerText);
+                      const newEndDate = prompt("Edit end date:", endDateText.innerText);
+
+                      if (newName !== null) {
+                        itemText.innerText = newName;
+                      }
+
+                      if (newStartDate !== null) {
+                        startDateText.innerText = newStartDate;
+                      }
+
+                      if (newEndDate !== null) {
+                        endDateText.innerText = newEndDate;
+                      }
+                    });
+                  }
+
+
+                  deleteButton.addEventListener("click", function () {
+                    const checkedItems = document.querySelectorAll('.list-group-item input:checked');
+
+                    checkedItems.forEach(item => {
+                      item.closest('.list-group-item').remove();
+                    });
+                  });
+
+                  // Setup edit events for existing items
+                  const editButtons = document.querySelectorAll(".edit-item");
+                  editButtons.forEach(editButton => {
+                    const item = editButton.closest(".list-group-item");
+                    setupEditEvent(item);
+                  });
+                });
+              </script>
+              <ul class="list-group mb-0">
+                <li
+                  class="list-group-item d-flex justify-content-between align-items-center border-start-0 border-top-0 border-end-0 border-bottom rounded-0 mb-2">
+                  <div class="d-flex align-items-center">
+                    <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." />
+                    Cras justo odio
+                  </div>
+                  <div class="date-section">
+                    <span class="mr-2">Start Date: ${startDateInput.value}</span>
+                    <span>End Date: ${endDateInput.value}</span>
+                  </div>
+                  <div class="action-buttons">
+                    <a href="#!" class="edit-item" data-mdb-toggle="tooltip" title="Edit item">
+                      <i class="fas fa-edit text-warning"></i>
+                    </a>
+                  </div>
+                </li>
+                <li
+                  class="list-group-item d-flex justify-content-between align-items-center border-start-0 border-top-0 border-end-0 border-bottom rounded-0 mb-2">
+                  <div class="d-flex align-items-center">
+                    <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." />
+                    Dapibus ac facilisis in
+                  </div>
+                  <div class="date-section">
+                    <span class="mr-2">Start Date: ${startDateInput.value}</span>
+                    <span>End Date: ${endDateInput.value}</span>
+                  </div>
+                  <div class="action-buttons">
+                    <a href="#!" class="edit-item" data-mdb-toggle="tooltip" title="Edit item">
+                      <i class="fas fa-edit text-warning"></i>
+                    </a>
+                  </div>
+                </li>
+                <li
+                  class="list-group-item d-flex justify-content-between align-items-center border-start-0 border-top-0 border-end-0 border-bottom rounded-0 mb-2">
+                  <div class="d-flex align-items-center">
+                    <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." />
+                    Porta ac consectetur ac
+                  </div>
+                  <div class="date-section">
+                    <span class="mr-2">Start Date: ${startDateInput.value}</span>
+                    <span>End Date: ${endDateInput.value}</span>
+                  </div>
+                  <div class="action-buttons">
+                    <a href="#!" class="edit-item" data-mdb-toggle="tooltip" title="Edit item">
+                      <i class="fas fa-edit text-warning"></i>
+                    </a>
+                  </div>
+                </li>
+              </ul>
+              <button id="deleteBtn" class="btn btn-danger mt-2">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+
+</html>
